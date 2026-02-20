@@ -17,7 +17,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'nvdApiKey', variable: 'nvdApiKey')]) {
                             echo "Running SCA (OWASP Dependency-Check)..."
                             sh 'npm install'
-                            sh "dc --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o output/"
+                            sh "dependency-check.sh --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o output/"
                             echo "SCA Done."
                         }
                     }
