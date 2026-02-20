@@ -7,6 +7,7 @@ pipeline {
             steps {
                 cleanWs()
                 echo "Workspace cleaned. Starting fresh build..."
+                sh 'mkdir output'
             }
         }
 
@@ -18,7 +19,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'nvdApiKey', variable: 'nvdApiKey')]) {
                             echo "Running SCA (OWASP Dependency-Check)..."
                             sh 'npm install'
-                            sh "dc --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o ."
+                            sh "dc --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o output/"
                             echo "SCA Done."
                         }
                     }
@@ -27,7 +28,7 @@ pipeline {
                 stage('SAST') {
                     steps {
                         echo "Running SAST (Snyk, Bearer)..."
-                        sh 'bearer scan . -f json --output vulnNode.json'
+                        sh 'bearer scan . -f json --output output/vulnNode.json'
                         echo "SAST Done"
                     }
                 }
@@ -40,7 +41,7 @@ pipeline {
                 sh 'docker compose build'
 
                 echo "Scanning Docker Image..."
-                sh 'trivy image vulnerable-node-vulnerable_node -o vulnNode.json -f json'
+                sh 'trivy image vulnerable-node-vulnerable_node -o output/vulnNode.json -f json'
             }
         }
 
