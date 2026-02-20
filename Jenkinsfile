@@ -5,8 +5,6 @@ pipeline {
 
         stage('Initialize') {
             steps {
-                cleanWs()
-                echo "Workspace cleaned. Starting fresh build..."
                 sh 'mkdir output'
             }
         }
