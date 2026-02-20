@@ -51,11 +51,5 @@ pipeline {
             }
         }
         
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-                echo "Workspace cleaned..."
-            }
-        }
     }
 }
