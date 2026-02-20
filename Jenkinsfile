@@ -56,5 +56,12 @@ pipeline {
                 sh 'docker run --rm -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-stable:latest zap-baseline.py -t http://localhost:3000 -r scan-report.html'
             }
         }
+        
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+                echo "Workspace cleaned..."
+            }
+        }
     }
 }
