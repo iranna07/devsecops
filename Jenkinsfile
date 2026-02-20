@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'demo'
-            customWorkspace '/home/kali/workspace-jenkins'
-        }
-    }
+    agent any
 
     stages {
 
@@ -23,7 +18,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'nvdApiKey', variable: 'nvdApiKey')]) {
                             echo "Running SCA (OWASP Dependency-Check)..."
                             sh 'npm install'
-                            sh "dc --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o ../output/"
+                            sh "dc --nvdApiKey ${nvdApiKey} --project vulnNode -s . -f ALL -o ."
                             echo "SCA Done."
                         }
                     }
@@ -32,7 +27,7 @@ pipeline {
                 stage('SAST') {
                     steps {
                         echo "Running SAST (Snyk, Bearer)..."
-                        sh 'bearer scan . -f json --output ../output/vulnNode.json'
+                        sh 'bearer scan . -f json --output vulnNode.json'
                         echo "SAST Done"
                     }
                 }
@@ -45,7 +40,7 @@ pipeline {
                 sh 'docker compose build'
 
                 echo "Scanning Docker Image..."
-                sh 'trivy image vulnerable-node-vulnerable_node -o ../output/vulnNode.json -f json'
+                sh 'trivy image vulnerable-node-vulnerable_node -o vulnNode.json -f json'
             }
         }
 
@@ -59,7 +54,7 @@ pipeline {
         stage('DAST') {
             steps {
                 echo "Running OWASP ZAP DAST..."
-                sh 'docker run --rm -v /home/kali/workspace-jenkins/output/:/zap/wrk/:rw -t zaproxy/zap-stable:latest zap-baseline.py -t http://localhost:3000 -r scan-report.html'
+                sh 'docker run --rm -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-stable:latest zap-baseline.py -t http://localhost:3000 -r scan-report.html'
             }
         }
     }
