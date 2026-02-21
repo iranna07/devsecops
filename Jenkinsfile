@@ -47,7 +47,7 @@ pipeline {
         stage('DAST') {
             steps {
                 echo "Running OWASP ZAP DAST..."
-                sh 'docker run --rm -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-stable:latest zap-baseline.py -t http://localhost:3000 -r scan-report.html'
+                sh 'docker run --rm -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-stable:latest zap-baseline.py -t http://192.168.253.128:3000 -r scan-report.html'
             }
         }
         
