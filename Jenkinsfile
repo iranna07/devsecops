@@ -33,7 +33,7 @@ pipeline {
                 sh 'docker compose build'
 
                 echo "Scanning Docker Image..."
-                sh 'trivy image vulnerable-node-vulnerable_node -o trivy_vulnNode.json -f json | exit 0'
+                sh 'trivy image demo-vulnerable_node:latest -o trivy_vulnNode.json -f json | exit 0'
             }
         }
 
